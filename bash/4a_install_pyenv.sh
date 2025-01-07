@@ -22,7 +22,6 @@ log() {
     echo "$message" | tee -a "$log_file"
 }
 
-
 # Redirect stdout and stderr to the log file
 exec > >(while read -r line; do log  "INFO : $line"; done)
 exec 2> >(while read -r line; do log "ERROR: $line"; done)
@@ -30,15 +29,16 @@ exec 2> >(while read -r line; do log "ERROR: $line"; done)
 #############################################################################
 # [Main]
 
-H1 "# Git Information:"
 
-which git 
-git --version
+H1 "# Install Pyenv"
+curl https://pyenv.run | bash
 
-git config --global --get user.name
-git config --global --get user.email
+H1 "# Add Pyenv to your shell"
 
-H1 "# All Global Config: (git config --global --list)"
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(pyenv init --path)"' >> ~/.bashrc
+source ~/.bashrc
 
-git config --global --list
-pause 'Press [Enter] key to continue...'
+H1 "# Verify Installation"
+pyenv --version

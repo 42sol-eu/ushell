@@ -7,7 +7,9 @@
 pc_name=$(hostname)
 username=$(whoami)
 current_date=$(date +%Y-%m-%d)
-log_file="${pc_name}_${username}_${current_date}.log"
+log_file="${pc_name}_${username}_4c_install_poetry_${current_date}.log"
+
+touch "$log_file"
 
 #############################################################################
 # [Functions]
@@ -22,7 +24,6 @@ log() {
     echo "$message" | tee -a "$log_file"
 }
 
-
 # Redirect stdout and stderr to the log file
 exec > >(while read -r line; do log  "INFO : $line"; done)
 exec 2> >(while read -r line; do log "ERROR: $line"; done)
@@ -30,15 +31,18 @@ exec 2> >(while read -r line; do log "ERROR: $line"; done)
 #############################################################################
 # [Main]
 
-H1 "# Git Information:"
+H1 "# Install Poetry"
+# option 2: curl -sSL https://install.python-poetry.org | python3 -
+sudo apt install python3-poetry 
 
-which git 
-git --version
+H1 "# Add Poetry to PATH (if not already added)"
 
-git config --global --get user.name
-git config --global --get user.email
+# Check if $HOME/.local/bin is already in the PATH
+if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+    export PATH="$HOME/.local/bin:$PATH"
+fi
 
-H1 "# All Global Config: (git config --global --list)"
+H1 "# Verify install "
 
-git config --global --list
-pause 'Press [Enter] key to continue...'
+which poetry
+poetry --version

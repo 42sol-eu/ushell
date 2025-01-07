@@ -22,7 +22,6 @@ log() {
     echo "$message" | tee -a "$log_file"
 }
 
-
 # Redirect stdout and stderr to the log file
 exec > >(while read -r line; do log  "INFO : $line"; done)
 exec 2> >(while read -r line; do log "ERROR: $line"; done)
@@ -30,15 +29,16 @@ exec 2> >(while read -r line; do log "ERROR: $line"; done)
 #############################################################################
 # [Main]
 
-H1 "# Git Information:"
+H1 "# Verify Installation"
+which pyenv
+pyenv --version
 
-which git 
-git --version
+H1 "# Install Python via Pyenv"
+pyenv install 3.9
+pyenv install 3.10
+pyenv install 3.11
+pyenv install 3.12
 
-git config --global --get user.name
-git config --global --get user.email
+H1 "# Show version "
 
-H1 "# All Global Config: (git config --global --list)"
-
-git config --global --list
-pause 'Press [Enter] key to continue...'
+pyenv versions

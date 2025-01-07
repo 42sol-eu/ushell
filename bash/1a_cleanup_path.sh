@@ -7,7 +7,9 @@
 pc_name=$(hostname)
 username=$(whoami)
 current_date=$(date +%Y-%m-%d)
-log_file="${pc_name}_${username}_${current_date}.log"
+log_file="${pc_name}_${username}_1a_cleanup_path_${current_date}.log"
+
+touch "$log_file"
 
 #############################################################################
 # [Functions]
@@ -22,6 +24,17 @@ log() {
     echo "$message" | tee -a "$log_file"
 }
 
+# Function to remove non-existent paths from PATH
+clean_path() {
+    local new_path=""
+    local IFS=":"
+    for dir in $PATH; do
+        if [ -d "$dir" ]; then
+            new_path="${new_path:+$new_path:}$dir"
+        fi
+    done
+    export PATH="$new_path"
+}
 
 # Redirect stdout and stderr to the log file
 exec > >(while read -r line; do log  "INFO : $line"; done)
@@ -30,15 +43,12 @@ exec 2> >(while read -r line; do log "ERROR: $line"; done)
 #############################################################################
 # [Main]
 
-H1 "# Git Information:"
+H1 "# Before:"
+echo "Original PATH: $PATH"
 
-which git 
-git --version
+H1 "# Execute clean_path:"
+# Call the function
+clean_path
 
-git config --global --get user.name
-git config --global --get user.email
-
-H1 "# All Global Config: (git config --global --list)"
-
-git config --global --list
-pause 'Press [Enter] key to continue...'
+H1 "# After:"
+echo "Cleaned PATH: $PATH"
